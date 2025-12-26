@@ -96,3 +96,104 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Doccumentation this project:
+# 1 Connecttion MongoDB
+
+- [Xem tài liệu tham khảo](https://docs.nestjs.com/techniques/mongodb).
+
+- Tải thue viện cần thiết trước tiên:
+```bash
+npm install @nestjs/mongoose mongoose
+```
+
+Sau đó setup trong `app.module.ts` như tài liệu của NestJS hoặc theo cách bên dưới:
+```bash
+
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
+@Module({
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost/nest')
+    ],
+})
+export class AppModule {}
+```
+# 2 [NestJS/config](https://docs.nestjs.com/techniques/configuration) (dotenv in NestJS):
+```bash
+npm i --save-exact @nestjs/config
+```
+- việc dùng `nestjs/config` thay vì dotenv để chúng ta có thể validate input đầu vào để dễ dàng fix bug khi gặp lỗi hơn.
+
+Trong file `app.module.ts` setup như sau:
+```bash
+
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, //cho phép sử dụng ConfigModule ở bất cứ đâu trong ứng dụng mà không cần import lại
+      envFilePath: '.env', //đường dẫn tới file .env
+    }),
+  ],
+})
+export class AppModule {}
+```
+Tiếp đến làm sao để sử dụng được thư viện này. Ta cần tạo 1 file dotenv với môi trường cụ thể `(để ngắn gọn thì trong project này tui chỉ làm với 1 file dotenv duy nhất cho nhanh)`:
+- Tạo 1 file dotenv ở root của dự án.
+- Để lấy được thông số trong `.env` ở `controller` ta setup như ví dụ bên dưới:
+```bash
+import { Controller, Get, Render } from '@nestjs/common';
+import { AppService } from './app.service';
+import { ConfigService } from '@nestjs/config';
+
+@Controller()
+export class AppController {
+  constructor(
+    private readonly appService: AppService, 
+    private configService: ConfigService, // Khai báo ở đây để dùng!
+    ) {}
+
+  @Get()
+  @Render('home')
+  getHello() {
+    const message = this.appService.getHello();
+    const port = this.configService.get<string>('PORT');
+    return {
+      message, port
+    };
+  }
+}
+```
+- Đối với file `main.ts` ta setup như ví dụ sau:
+```bash
+import { ConfigService } from '@nestjs/config';
+
+const configService = app.get(ConfigService);
+await app.listen(configService.get<number>('PORT') || 3000, configService.get<string>('HOST') || 'localhost');
+```
+-  Đối với việc setup kết nối Database bằng link của `.env` trong file `app.module.ts` tham khảo với ví dụ bên dưới hoặc tham khảo [tài liệu](https://docs.nestjs.com/techniques/mongodb#async-configuration):
+```bash
+MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    })
+```
+# 3 Validate Data input with [`class-validator class-transformer`](https://docs.nestjs.com/techniques/validation):
+
+# 4 [Authentication](https://docs.nestjs.com/security/authentication):
+
+# 5 [Encryption-and-hashing](https://docs.nestjs.com/security/encryption-and-hashing#hashing):
+
+# 6 [Cookies](https://docs.nestjs.com/techniques/cookies):
+
+
+
+
+
