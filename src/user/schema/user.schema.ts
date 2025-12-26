@@ -30,6 +30,9 @@ export class User {
     @Prop({parser: true, default: ''})
     phone: string;
 
+    @Prop({default: ''})
+    refreshToken: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

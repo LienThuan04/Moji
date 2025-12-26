@@ -5,8 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import mongoose, { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from 'src/auth/auth.service';
-import { genSaltSync, hashSync } from 'bcrypt';
+import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -18,19 +17,25 @@ export class UserService {
     const user = await this.userModel.findOne({ $or: [{ username }, { email }] });
     return !!user;//return true if user exists
   }
-  GetHashPassword(Password: string): string {
+  async GetHashPassword(Password: string): Promise<string> {
     const rounds = Number(this.configService.get<string>('SALT_ROUNDS'));
     const salt = genSaltSync(rounds);
     return hashSync(Password, salt);
   };
 
+  async IsValidPassword(passsword: string, hash: string): Promise<boolean> {
+    if (!passsword || !hash) {
+      return false;
+    }
+    return compareSync(passsword, hash);
+  };
   async create(createUserDto: CreateUserDto) {
     if (await this.checkUserIsExist(createUserDto.username, createUserDto.email)) {
       throw new BadRequestException('Username or Email already exists');
     }
     const NewUser = await this.userModel.create({
       ...createUserDto,
-      hashedPassword: this.GetHashPassword(createUserDto.password),
+      hashedPassword: await this.GetHashPassword(createUserDto.password),
     });
     if (!NewUser) {
       throw new BadRequestException('Cannot create user');
@@ -42,11 +47,15 @@ export class UserService {
     return `This action returns all user`;
   }
 
+  findOneByUsername(username: string) {
+    return this.userModel.findOne({ username });
+  }
+
   findOne(id: string) {
     if(!mongoose.Types.ObjectId.isValid(id)){
       throw new BadRequestException('Invalid user ID');
     }
-    return this.userModel.findById(id);
+    return this.userModel.findById(id).select(['-hashedPassword', '-refreshToken']);
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

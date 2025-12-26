@@ -193,6 +193,12 @@ MongooseModule.forRootAsync({
 
 # 6 [Cookies](https://docs.nestjs.com/techniques/cookies):
 
+# 7 [JWT](https://docs.nestjs.com/security/authentication#jwt-token):
+
+# 8 [Passport Authentication](https://docs.nestjs.com/recipes/passport#authentication-requirements):
+
+
+
 
 
 
