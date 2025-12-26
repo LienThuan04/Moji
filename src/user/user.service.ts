@@ -29,6 +29,11 @@ export class UserService {
     }
     return compareSync(passsword, hash);
   };
+
+  async findOneByUsername(username: string) {
+    return await this.userModel.findOne({ username });
+  };
+
   async create(createUserDto: CreateUserDto) {
     if (await this.checkUserIsExist(createUserDto.username, createUserDto.email)) {
       throw new BadRequestException('Username or Email already exists');
@@ -47,22 +52,19 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOneByUsername(username: string) {
-    return this.userModel.findOne({ username });
-  }
 
-  findOne(id: string) {
-    if(!mongoose.Types.ObjectId.isValid(id)){
+  async findOne(id: string): Promise<UserDocument | null> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid user ID');
     }
-    return this.userModel.findById(id).select(['-hashedPassword', '-refreshToken']);
+    return await this.userModel.findById(id).select(['-hashedPassword']);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }

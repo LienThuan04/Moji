@@ -15,11 +15,17 @@ export class AuthController {
     @Public()
     @UseGuards(LocalAuthGuard)// Áp dụng LocalAuthGuard cho route đăng nhập
     @Post('signin')
+    @ResponseMessage('User logged in successfully')
     async login(@User() user: IUser, @Res({ passthrough: true }) res: Response) {
-        return {
-            message: 'Logged in successfully',
-            ...await this.authService.SignIn(user, res)
-        };
+        return await this.authService.SignIn(user, res);
+    }
+
+    @Public()
+    @Post('refresh-token')
+    @ResponseMessage('Access token refreshed successfully')
+    async refreshToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+        const refreshToken = req.cookies['refresh_token'];
+        return await this.authService.refreshAccessToken(refreshToken, res);
     }
 
     @Public()

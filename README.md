@@ -185,19 +185,19 @@ MongooseModule.forRootAsync({
       inject: [ConfigService],
     })
 ```
-# 3 Validate Data input with [`class-validator class-transformer`](https://docs.nestjs.com/techniques/validation):
+# 3 Validate Data input with [`class-validator class-transformer`](https://docs.nestjs.com/techniques/validation)
 
-# 4 [Authentication](https://docs.nestjs.com/security/authentication):
+# 4 [Authentication](https://docs.nestjs.com/security/authentication)
 
-# 5 [Encryption-and-hashing](https://docs.nestjs.com/security/encryption-and-hashing#hashing):
+# 5 [Encryption-and-hashing](https://docs.nestjs.com/security/encryption-and-hashing#hashing)
 
-# 6 [Cookies](https://docs.nestjs.com/techniques/cookies):
+# 6 [Cookies](https://docs.nestjs.com/techniques/cookies)
 
-# 7 [JWT](https://docs.nestjs.com/security/authentication#jwt-token):
+# 7 [JWT](https://docs.nestjs.com/security/authentication#jwt-token)
 
-# 8 [Passport Authentication](https://docs.nestjs.com/recipes/passport#authentication-requirements):
+# 8 [Passport Authentication](https://docs.nestjs.com/recipes/passport#authentication-requirements)
 
-
+# 9 []():
 
 
 

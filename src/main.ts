@@ -13,7 +13,6 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
 
   const reflector = app.get(Reflector); //lấy instance của Reflector để sử dụng.
-  
 
   //global prefix and versioning
   const globalPrefix = 'api';

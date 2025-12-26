@@ -8,11 +8,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { SessionModule } from 'src/session/session.module';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
+    SessionModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
