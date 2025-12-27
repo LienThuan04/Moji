@@ -31,8 +31,14 @@ export class AuthController {
     @Public()
     @ResponseMessage('User registered successfully')
     @Post('signup')
-    register(@Body() createUserDto: CreateUserDto) {
-        const newUser = this.authService.SignUp(createUserDto);
+    async register(@Body() createUserDto: CreateUserDto) {
+        const newUser = await this.authService.SignUp(createUserDto);
         return newUser;
+    }
+
+    @Post('signout')
+    async logout(@User() user: IUser, @Res({ passthrough: true }) res: Response) {
+        const test = user;
+        return await this.authService.SignOut(user._id, res);
     }
 }

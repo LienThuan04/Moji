@@ -67,6 +67,10 @@ export class AuthService {
             username: User.username,
             email: User.email,
             displayName: User.displayName,
+            avatarUrl: User.avatarUrl, 
+            avatarId: User.avatarId,
+            phone: User.phone, 
+            bio: User.bio
         };
         const access_token = this.jwtService.sign(payload);
         return{
@@ -85,7 +89,7 @@ export class AuthService {
 
     refreshAccessToken = async (refreshToken: string, res: Response): Promise<any> => {
         try {
-            if (!refreshToken) {
+            if (!refreshToken || refreshToken === '' || refreshToken === 'undefined') {
                 throw new BadRequestException('No refresh token provided');
             }
             this.jwtService.verify(refreshToken, { // xác thực token
@@ -114,7 +118,17 @@ export class AuthService {
             return this.SignIn(User, res); //tạo mới access token và refresh token
 
         } catch (error) {
-            
+            console.log(error);
+            throw new BadRequestException('Could not refresh access token');
         }
+    };
+
+    async SignOut(userId: string, res: Response): Promise<any> {
+        const result = await this.sessionService.remove(userId);
+        if (!result) {
+            throw new BadRequestException('Cannot sign out user because session not found');
+        }
+        res.clearCookie('refresh_token');
+        return { message: 'User logged out successfully' };
     }
 }

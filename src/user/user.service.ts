@@ -6,12 +6,14 @@ import { User, UserDocument } from './schema/user.schema';
 import mongoose, { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
+import { SessionService } from 'src/session/session.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly configService: ConfigService,
+    private readonly SessionService: SessionService
   ) { }
   async checkUserIsExist(username: string, email: string): Promise<boolean> {
     const user = await this.userModel.findOne({ $or: [{ username }, { email }] });
@@ -48,8 +50,12 @@ export class UserService {
     return NewUser; //return created user with default password
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const AllUsers = await this.userModel.find().select(['-hashedPassword']);
+    if (!AllUsers) {
+      throw new BadRequestException('No users found');
+    }
+    return AllUsers;
   }
 
 
@@ -61,10 +67,19 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).select(['-hashedPassword']);
+    if (!updatedUser) {
+      throw new BadRequestException('Cannot update user');
+    }
+    return updatedUser;
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} user`;
+    await this.SessionService.remove(id);
+    const deletedUser = await this.userModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new BadRequestException('Cannot delete user');
+    }
+    
   }
 }

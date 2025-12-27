@@ -39,7 +39,10 @@ export class SessionService {
   }
 
   async findOne(id: string) {
-    const session = await this.sessionModel.findById(id);
+    let session = await this.sessionModel.findById(id);
+    if (!session) {
+      session = await this.sessionModel.findOne({ userId: id });
+    }
     if (!session) {
       throw new BadRequestException('Session not found');
     }
@@ -63,9 +66,12 @@ export class SessionService {
   }
 
   async remove(id: string) {
-    const deletedSession = await this.sessionModel.findByIdAndDelete(id);
+    let deletedSession = await this.sessionModel.findOneAndDelete({ _id: id });
     if (!deletedSession) {
-      throw new BadRequestException('Cannot delete session');
+      deletedSession = await this.sessionModel.findOneAndDelete({ userId: id });
+    }
+    if (!deletedSession) {
+      throw new BadRequestException('Cannot delete session because you don\'t have a session');
     }
     return deletedSession;
   }

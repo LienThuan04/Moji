@@ -20,6 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: IUser) { //hàm này được gọi tự động bởi Passport sau khi token được xác thực thành công
     const { _id, username, email, displayName, phone, avatarUrl, avatarId, bio } = payload;
     //return for request.user
-    return { userId: _id, username, email, displayName, phone, avatarUrl, avatarId, bio };
+    return { _id, username, email, displayName, phone, avatarUrl, avatarId, bio };
   }
 }
