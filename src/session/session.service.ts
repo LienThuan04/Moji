@@ -31,23 +31,42 @@ export class SessionService {
   }
 
   async findAll() {
-    return `This action returns all session`;
+    const sessions = await this.sessionModel.find();
+    if (!sessions) {
+      throw new BadRequestException('No sessions found');
+    }
+    return sessions;
   }
 
   async findOne(id: string) {
-    return `This action returns a #${id} session`;
+    const session = await this.sessionModel.findById(id);
+    if (!session) {
+      throw new BadRequestException('Session not found');
+    }
+    return session;
   }
 
   async findRefreshToken(refreshToken: string): Promise<Session | null> {
     const session = await this.sessionModel.findOne({ refreshToken });
-    return session ? session : null;
+    if (!session) {
+      throw new BadRequestException('Session not found');
+    }
+    return session;
   }
 
   async update(id: string, updateSessionDto: UpdateSessionDto) {
-    return `This action updates a #${id} session`;
+    const updatedSession = await this.sessionModel.findByIdAndUpdate(id, updateSessionDto, { new: true });
+    if (!updatedSession) {
+      throw new BadRequestException('Cannot update session');
+    }
+    return updatedSession;
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} session`;
+    const deletedSession = await this.sessionModel.findByIdAndDelete(id);
+    if (!deletedSession) {
+      throw new BadRequestException('Cannot delete session');
+    }
+    return deletedSession;
   }
 }
