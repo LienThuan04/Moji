@@ -79,7 +79,13 @@ export default defineConfig([
 npm i react-router axios lucide-react tailwindcss @tailwindcss/vite tailwindcss-animate zustand zod react-hook-form @hookform/resolvers sonner
 ```
 
-- devDependencies
+<!-- - devDependencies
 ```bash
 npm i -D 
-```
+``` -->
+### `Tailwindcss` [Document](https://tailwindcss.com/docs/installation/using-vite)
+### `Sonner` [Document](https://sonner.emilkowal.ski/getting-started)
+### `ShadCN UI` [Document](https://ui.shadcn.com/docs/installation/vite)
+### `Patterncraft Theme` [Document](https://patterncraft.fun/)
+### `Zod` [Document](https://zod.dev/api)
+### `hookform` [Document](https://www.react-hook-form.com/get-started/#Applyvalidation)
