@@ -57,6 +57,7 @@ export class AuthService {
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true, //chỉ cho phép truy cập cookie từ phía server
             // secure: this.configService.get<string>('NODE_ENV') === 'production', //chỉ gửi cookie qua kết nối HTTPS trong môi trường production
+            sameSite: 'none', // cho phép gửi cookie trong các yêu cầu cross-site
             maxAge: Number(ms(this.configService.get<string>('JWT_REFRESH_EXPIRE') as any)), //thời gian sống của cookie tính bằng milliseconds
         });
 
@@ -92,7 +93,7 @@ export class AuthService {
             if (!refreshToken || refreshToken === '' || refreshToken === 'undefined') {
                 throw new BadRequestException('No refresh token provided');
             }
-            this.jwtService.verify(refreshToken, { // xác thực token
+            this.jwtService.verify(refreshToken, { // xác thực token ghi đè secret của jwt.module.ts
                 secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
             });
             const result = await this.sessionService.findRefreshToken(refreshToken);
