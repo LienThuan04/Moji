@@ -83,6 +83,7 @@ export class AuthService {
                 displayName: User.displayName,
                 avatarUrl: User.avatarUrl,
                 avatarId: User.avatarId,
+                phone: User.phone,
                 bio: User.bio,
             }
         }

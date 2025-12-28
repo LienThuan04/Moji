@@ -12,6 +12,13 @@ async function bootstrap() {
   //config .env file
   const configService: ConfigService = app.get(ConfigService);
 
+  //config cors
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN')?.split(','),
+    credentials: true, //cho phép gửi cookie trong các yêu cầu cross-origin
+  });
+
+  //config reflector
   const reflector = app.get(Reflector); //lấy instance của Reflector để sử dụng.
 
   //global prefix and versioning
@@ -24,8 +31,8 @@ async function bootstrap() {
   });
 
   //config Auards
-    app.useGlobalGuards(new JwtAuthGuard(reflector)); //cấu hình guard toàn cục để bảo vệ tất cả các route bằng JWT Auth Guard
-    app.useGlobalInterceptors(new TransformInterceptor(reflector)); //cấu hình interceptor toàn cục
+  app.useGlobalGuards(new JwtAuthGuard(reflector)); //cấu hình guard toàn cục để bảo vệ tất cả các route bằng JWT Auth Guard
+  app.useGlobalInterceptors(new TransformInterceptor(reflector)); //cấu hình interceptor toàn cục
 
   //config Pipe for validation
   app.useGlobalPipes(new ValidationPipe({
