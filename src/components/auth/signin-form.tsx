@@ -12,6 +12,10 @@ import { Input } from "@/components/ui/input"
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'; // Kết nối zod với react-hook-form
+import { authService } from "@/services/authService"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { setAccessToken, setUser } from "@/redux/slice/accountSlide"
+import { toast } from "sonner"
 
 
 const signinFormSchema = z.object({
@@ -30,10 +34,27 @@ export function SigninForm({
     resolver: zodResolver(signinFormSchema),
 
   });
+  // Redux
+  const Dispatch = useAppDispatch();
+  const isloadding = useAppSelector((state) => state.account.isLoading);
 
+  // Handle form submission
   const onSubmit = async (data: signinFormSchemaType) => {
     const { username, password } = data as signinFormSchemaType;
-    console.log("Form Data:", { username, password });
+    const res = await authService.signIn(username, password);
+    console.log("Sign in response:", res);
+    if (res && res?.data?.access_token && res?.data?.User) {
+      Dispatch(setUser(res?.data?.User)); // Cập nhật thông tin user vào Redux store
+      toast.success("Login successful!, You will be redirected home shortly."); // Hiển thị thông báo thành công
+      Dispatch(setAccessToken(res?.data?.access_token)); // Lưu accessToken vào Redux store
+      setTimeout(() => {
+        // window.location.href = "/";
+        return;
+      }, 1000);
+    } else {
+      toast.error("Login failed! Please check your credentials and try again."); // Hiển thị thông báo lỗi
+      return;
+    }
   }
 
   return (
@@ -72,7 +93,9 @@ export function SigninForm({
                 </FieldDescription>
               </Field>
               <Field>
-                <Button type="submit">Sign In</Button>
+                <Button type="submit" disabled={isloadding}>
+                  {isloadding ? "Signing in..." : "Sign In"}
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with

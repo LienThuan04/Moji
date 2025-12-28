@@ -88,4 +88,5 @@ npm i -D
 ### `ShadCN UI` [Document](https://ui.shadcn.com/docs/installation/vite)
 ### `Patterncraft Theme` [Document](https://patterncraft.fun/)
 ### `Zod` [Document](https://zod.dev/api)
-### `hookform` [Document](https://www.react-hook-form.com/get-started/#Applyvalidation)
+### `Hookform` [Document](https://www.react-hook-form.com/get-started/#Applyvalidation)
+### `Use Redux` [Document](https://react-redux.js.org/tutorials/quick-start)
