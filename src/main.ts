@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -44,6 +45,26 @@ async function bootstrap() {
 
   //config cokie-parser
   app.use(cookieParser());
+
+  //config swagger
+  const config = new DocumentBuilder()
+    .setTitle('Moji API')
+    .setDescription('The Moji API description')
+    .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'Bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+    }, 'access-token')
+    .addSecurityRequirements('access-token')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, documentFactory, { //route swagger http://localhost:3000/swagger
+    swaggerOptions: {
+      persistAuthorization: true, //keep authorization token after refresh page
+    },
+  });
 
   //use config values
   await app.listen(configService.get<number>('PORT') ?? '', configService.get<string>('HOST') ?? '');
