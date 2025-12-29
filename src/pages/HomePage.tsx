@@ -11,6 +11,7 @@ import { authService } from "@/services/authService";
 export const HomePage: React.FC = () => {
     const User = useAppSelector((state: { account: { user: IUser } }) => state.account.user);
     const IsAuthenticated = useAppSelector((state: { account: { isAuthenticated: boolean } }) => state.account.isAuthenticated);
+    const IsLoading = useAppSelector((state: { account: { isLoading: boolean } }) => state.account.isLoading);
     const dispatch = useAppDispatch();
 
     const handleLogout = async () => {
@@ -71,22 +72,31 @@ export const HomePage: React.FC = () => {
                                 size="sm"
                                 variant="outline"
                                 onClick={handleLogout}
+                                disabled={IsLoading}
                             >
-                                Logout
+                                {IsLoading ? (
+                                    <span className="inline-flex items-center">
+                                        <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                        Logging out...
+                                    </span>
+                                ) : (
+                                    'Logout'
+                                )}
                             </Button>
                         </div>
-                    ) : (
-                        <>
-                            <Button size="lg" asChild>
-                                <Link to="/signup">Create Account</Link>
-                            </Button>
-                            <Button size="lg" variant="outline" asChild>
-                                <Link to="/signin">Sign In</Link>
-                            </Button>
-                        </>
-                    )}
+                    ) : null}
                 </div>
             </header>
+
+            {/* Full-page subtle loading overlay when IsLoading is true */}
+            {IsLoading && (
+                <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20">
+                    <div className="inline-flex items-center gap-3 rounded-md bg-card/90 px-4 py-3 shadow-lg">
+                        <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        <span>Processing...</span>
+                    </div>
+                </div>
+            )}
 
             <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20 pt-6 lg:px-8">
                 <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">

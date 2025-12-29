@@ -99,7 +99,7 @@ import { store } from '@/redux/store';
 // Thông báo toast cho các lỗi hiển thị đến người dùng
 import { toast } from 'sonner';
 // Action để cập nhật access token vào redux sau khi thực hiện refresh
-import { setAccessToken } from '@/redux/slice/accountSlide';
+import {clearState, setAccessToken } from '@/redux/slice/accountSlide';
 // Các hàm API liên quan authentication (refresh, logout, ...)
 import { authService } from '@/services/authService';
 
@@ -137,6 +137,8 @@ const handleRefreshToken = async (): Promise<string | null> => {
             return null;
         }
     } catch (error: any) {
+        const Dispatch = store.dispatch;
+        Dispatch(clearState()); // Clear access token in Redux store
         // Lỗi mạng hoặc server khi refresh
         console.error('Không thể refresh token:', error?.message ?? error);
         return null;
