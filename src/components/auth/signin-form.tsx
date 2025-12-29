@@ -16,6 +16,7 @@ import { authService } from "@/services/authService"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { setAccessToken, setUser } from "@/redux/slice/accountSlide"
 import { toast } from "sonner"
+import { Link, useNavigate } from "react-router"
 
 
 const signinFormSchema = z.object({
@@ -34,6 +35,7 @@ export function SigninForm({
     resolver: zodResolver(signinFormSchema),
 
   });
+  const navigate = useNavigate();
   // Redux
   const Dispatch = useAppDispatch();
   const isloadding = useAppSelector((state) => state.account.isLoading);
@@ -48,11 +50,11 @@ export function SigninForm({
       toast.success("Login successful!, You will be redirected home shortly."); // Hiển thị thông báo thành công
       Dispatch(setAccessToken(res?.data?.access_token)); // Lưu accessToken vào Redux store
       setTimeout(() => {
-        // window.location.href = "/";
+        navigate("/"); // Chuyển hướng đến trang chat sau 1 giây
         return;
-      }, 1000);
-    } else {
-      toast.error("Login failed! Please check your credentials and try again."); // Hiển thị thông báo lỗi
+      }, 500);
+    } else if (res && res?.error && res?.message) {
+      toast.error(res.message); // Hiển thị thông báo lỗi
       return;
     }
   }
@@ -93,7 +95,7 @@ export function SigninForm({
                 </FieldDescription>
               </Field>
               <Field>
-                <Button type="submit" disabled={isloadding}>
+                <Button type="submit" disabled={isloadding || isSubmitting } className="w-full">
                   {isloadding ? "Signing in..." : "Sign In"}
                 </Button>
               </Field>
@@ -130,7 +132,7 @@ export function SigninForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                You don't have an account? <a href="/signup">Sign up</a>
+                You don't have an account? <Link to="/signup">Sign up</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
@@ -144,8 +146,8 @@ export function SigninForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <Link to="#">Terms of Service</Link>{" "}
+        and <Link to="#">Privacy Policy</Link>.
       </FieldDescription>
     </div>
   )

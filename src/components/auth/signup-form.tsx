@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input"
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod'; // Kết nối zod với react-hook-form
+import { Link, useNavigate } from "react-router"
+import { authService } from "@/services/authService"
+import { toast } from "sonner"
 
 
 const signupFormSchema = z.object({
@@ -31,14 +34,32 @@ export function SignupForm({
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<signupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
-
   });
-
+  const navigate = useNavigate();
+  // Handle form submission
   const onSubmit = async (data: signupFormSchemaType) => {
     const {firstName, lastName, username, email, password } = data as signupFormSchemaType;
     const displayName = `${firstName} ${lastName}`;
-    console.log("Form Data:", { displayName, username, email, password });
-  }
+    try {
+      const res = await authService.signUp(username, email, password, displayName);
+      if (res && res?.data) {
+        toast.success("Your account has been successfully created! You will be redirected to the Sign In page.");
+        setTimeout(() => {
+          navigate("/signin"); // Chuyển hướng đến trang chat sau 1 giây
+          return;
+        }, 800);
+      } else if (res && res?.error && res?.message) {
+        toast.error(res.message); // Hiển thị thông báo lỗi
+        return;
+      } else {
+        toast.error("Signup failed. Please try again.");
+        return;
+      }
+    } catch (error: any) {
+      console.log("Signup error:", error.message);
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -142,7 +163,7 @@ export function SignupForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                Already have an account? <a href="/signin">Sign in</a>
+                Already have an account? <Link to="/signin">Sign in</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
@@ -156,8 +177,8 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <Link to="#">Terms of Service</Link>{" "}
+        and <Link to="#">Privacy Policy</Link>.
       </FieldDescription>
     </div>
   )
