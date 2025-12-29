@@ -15,6 +15,7 @@ async function bootstrap() {
   //config cors
   app.enableCors({
     origin: configService.get<string>('CORS_ORIGIN')?.split(','),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true, //cho phép gửi cookie trong các yêu cầu cross-origin
   });
 

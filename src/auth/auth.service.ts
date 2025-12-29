@@ -59,6 +59,7 @@ export class AuthService {
             // secure: this.configService.get<string>('NODE_ENV') === 'production', //chỉ gửi cookie qua kết nối HTTPS trong môi trường production
             sameSite: 'none', // cho phép gửi cookie trong các yêu cầu cross-site
             maxAge: Number(ms(this.configService.get<string>('JWT_REFRESH_EXPIRE') as any)), //thời gian sống của cookie tính bằng milliseconds
+            secure: true, // Đảm bảo cookie chỉ được gửi qua kết nối HTTPS nếu không bật cái này thì cookies sẽ không được được giữ lại trên trình duyệt khi deploy lên production
         });
 
         const payload = {

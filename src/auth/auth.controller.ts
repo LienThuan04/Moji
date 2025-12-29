@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
@@ -18,6 +18,12 @@ export class AuthController {
     @ResponseMessage('User logged in successfully')
     async login(@User() user: IUser, @Res({ passthrough: true }) res: Response) {
         return await this.authService.SignIn(user, res);
+    };
+
+    @Get('account')
+    @ResponseMessage('User account retrieved successfully')
+    async getAccount(@User() user: IUser) {
+        return user;
     }
 
     @Public()
@@ -26,7 +32,7 @@ export class AuthController {
     async refreshToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
         const refreshToken = req.cookies['refresh_token'];
         return await this.authService.refreshAccessToken(refreshToken, res);
-    }
+    };
 
     @Public()
     @ResponseMessage('User registered successfully')
@@ -34,11 +40,11 @@ export class AuthController {
     async register(@Body() createUserDto: CreateUserDto) {
         const newUser = await this.authService.SignUp(createUserDto);
         return newUser;
-    }
+    };
 
     @Post('signout')
     async logout(@User() user: IUser, @Res({ passthrough: true }) res: Response) {
         const test = user;
         return await this.authService.SignOut(user._id, res);
-    }
+    };
 }
