@@ -6,6 +6,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
+import { MessageModule } from './message/message.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { FriendModule } from './friend/friend.module';
+import { FriendRequestModule } from './friend-request/friend-request.module';
 
 @Module({
   imports: [
@@ -29,6 +33,10 @@ import { SessionModule } from './session/session.module';
     UserModule,
     AuthModule,
     SessionModule,
+    MessageModule,
+    ConversationModule,
+    FriendModule,
+    FriendRequestModule,
 
 
   ],

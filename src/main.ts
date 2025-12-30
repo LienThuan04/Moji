@@ -69,5 +69,6 @@ async function bootstrap() {
   //use config values
   await app.listen(configService.get<number>('PORT') ?? '', configService.get<string>('HOST') ?? '');
   console.log(`Application is running on: http://${configService.get<string>('HOST')}:${configService.get<number>('PORT')}/${globalPrefix}/v${version}`);
+  console.log(`Swagger is running on: http://${configService.get<string>('HOST')}:${configService.get<number>('PORT')}/swagger`);
 }
 bootstrap();
