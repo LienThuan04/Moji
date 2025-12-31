@@ -2,13 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
 import { UpdateFriendRequestDto } from './dto/update-friend-request.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { FriendRequest } from './schema/friend-request.schema';
+import { FriendRequest, FriendRequestDocument } from './schema/friend-request.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class FriendRequestService {
   constructor(
-    @InjectModel( FriendRequest.name ) private friendRequestModel: Model<FriendRequest>,
+    @InjectModel( FriendRequest.name ) private friendRequestModel: Model<FriendRequestDocument>,
   ) {}
   async findExistingRequest(fromId: string, toId: string): Promise<FriendRequest | null> {
     return this.friendRequestModel.findOne({ $or: [ { from: fromId, to: toId }, { from: toId, to: fromId } ] });
@@ -26,7 +26,7 @@ export class FriendRequestService {
     return createdRequest;
   }
 
-  async   findAll(_id: string) {
+  async findAll(_id: string) {
     const populateFields = ['_id', 'username', 'email', 'displayName', 'avatarUrl', 'avatarId'];
     const [ sent, received ] = await Promise.all([ // Parallel queries for efficiency
       this.friendRequestModel.find({ from: _id }).populate('to', populateFields).lean(),
@@ -46,7 +46,7 @@ export class FriendRequestService {
     return request;
   }
 
-  update(id: string, updateFriendRequestDto: UpdateFriendRequestDto) {
+  async update(id: string, updateFriendRequestDto: UpdateFriendRequestDto) {
     return `This action updates a #${id} friendRequest`;
   }
 

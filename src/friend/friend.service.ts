@@ -2,17 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFriendDto } from './dto/create-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Friend } from './schema/friend.schema';
+import { Friend, FriendDocument } from './schema/friend.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class FriendService {
   constructor(
-    @InjectModel(Friend.name) private friendModel: Model<Friend>,
+    @InjectModel(Friend.name) private friendModel: Model<FriendDocument>,
   ) { }
 
-  create(createFriendDto: CreateFriendDto) {
-    const createdFriend = this.friendModel.create(createFriendDto);
+  async create(createFriendDto: CreateFriendDto) {
+    const createdFriend = await this.friendModel.create(createFriendDto);
     return createdFriend;
   }
 
@@ -24,7 +24,7 @@ export class FriendService {
     return { friends };
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} friend`;
   }
 
@@ -39,11 +39,11 @@ export class FriendService {
     return Check !== null; // Return true if they are friends, false otherwise
   }
 
-  update(id: number, updateFriendDto: UpdateFriendDto) {
+  async update(id: number, updateFriendDto: UpdateFriendDto) {
     return `This action updates a #${id} friend`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} friend`;
   }
 }

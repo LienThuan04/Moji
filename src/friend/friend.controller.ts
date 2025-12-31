@@ -11,8 +11,8 @@ export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
   @Post()
-  create(@Body() createFriendDto: CreateFriendDto) {
-    return this.friendService.create(createFriendDto);
+  async create(@Body() createFriendDto: CreateFriendDto) {
+    return await this.friendService.create(createFriendDto);
   }
 
   @Get()
@@ -39,17 +39,17 @@ export class FriendController {
   };
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.friendService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.friendService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return this.friendService.update(+id, updateFriendDto);
+  async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
+    return await this.friendService.update(+id, updateFriendDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.friendService.remove(+id);
   }
 }

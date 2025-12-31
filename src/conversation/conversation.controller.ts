@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
@@ -8,27 +8,31 @@ export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
   @Post()
-  create(@Body() createConversationDto: CreateConversationDto) {
-    return this.conversationService.create(createConversationDto);
+  async create(@Body() createConversationDto: CreateConversationDto) {
+    const conversation = await this.conversationService.create(createConversationDto);
+    if (!conversation){
+      throw new BadRequestException('Failed to create conversation');
+    }
+    return conversation;
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.conversationService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.conversationService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.conversationService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConversationDto: UpdateConversationDto) {
-    return this.conversationService.update(+id, updateConversationDto);
+  async update(@Param('id') id: string, @Body() updateConversationDto: UpdateConversationDto) {
+    return this.conversationService.update(id, updateConversationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.conversationService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.conversationService.remove(id);
   }
 }

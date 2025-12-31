@@ -13,7 +13,7 @@ export class Conversation {
     type: string;
 
     @Prop({ type:[ParticipantSchema], required: true })
-    participants: [Participant];
+    participants: Participant[];
 
     @Prop({ type: GroupSchema, required: false })
     group: Group;
@@ -22,7 +22,7 @@ export class Conversation {
     lastMessageAt: Date;
 
     @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: User.name })
-    seenby: mongoose.Schema.Types.ObjectId[];
+    seenby: mongoose.Types.ObjectId[];
 
     @Prop({ type: LastMessageSchema, default: null })
     lastMessage: LastMessage;

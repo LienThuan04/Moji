@@ -88,22 +88,22 @@ export class FriendRequestController {
 
   @Get()
   @ResponseMessage('Friend requests retrieved successfully.')
-  findAll(@User() user: IUser) {
-    return this.friendRequestService.findAll(user._id);
+  async findAll(@User() user: IUser) {
+    return await this.friendRequestService.findAll(user._id);
   };
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.friendRequestService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.friendRequestService.findOne(id);
   };
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFriendRequestDto: UpdateFriendRequestDto) {
-    return this.friendRequestService.update(id, updateFriendRequestDto);
+  async update(@Param('id') id: string, @Body() updateFriendRequestDto: UpdateFriendRequestDto) {
+    return await this.friendRequestService.update(id, updateFriendRequestDto);
   };
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendRequestService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.friendRequestService.remove(id);
   };
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Session } from './schema/session.schema';
+import { Session, SessionDocument } from './schema/session.schema';
 import { Model, mongo, ObjectId, Types } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import ms, { StringValue } from 'ms';
@@ -10,7 +10,7 @@ import ms, { StringValue } from 'ms';
 @Injectable()
 export class SessionService {
   constructor(
-    @InjectModel(Session.name) private sessionModel: Model<Session>,
+    @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
     private readonly configService: ConfigService,
   ) { }
 

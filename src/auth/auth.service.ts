@@ -7,7 +7,7 @@ import { Response } from 'express';
 import ms from 'ms';
 import { IUser } from 'src/user/user.interface';
 import { SessionService } from 'src/session/session.service';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { CreateSessionDto } from 'src/session/dto/create-session.dto';
 
 @Injectable()
