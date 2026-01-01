@@ -9,7 +9,9 @@ import { Model } from 'mongoose';
 export class ConversationService {
   constructor(
     @InjectModel(Conversation.name) private conversationModel: Model<ConversationDocument>,
-  ) { }
+    // private readonly messageService: MessageService,
+  ) { };
+
   async create(createConversationDto: CreateConversationDto): Promise<ConversationDocument> {
     const createdConversation = await this.conversationModel.create({
       type: createConversationDto.type,
@@ -34,6 +36,12 @@ export class ConversationService {
     return conversation;
   }
 
+  async findOneWithParticipants(ParticipantId: string, userId: string) {
+    const conversation = await this.conversationModel.findOne({
+      'participants.userId': { $all: [ParticipantId, userId] }
+    });
+    return conversation;
+  }
   async findDirectConversation(userId1: string, userId2: string) {
     const conversation = await this.conversationModel.findOne({
       type: 'direct',

@@ -10,8 +10,6 @@ export class Group {
     name: string;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
-    createdBy: mongoose.Schema.Types.ObjectId;
-
-
+    createdBy: mongoose.Types.ObjectId;
 }
 export const GroupSchema = SchemaFactory.createForClass(Group);

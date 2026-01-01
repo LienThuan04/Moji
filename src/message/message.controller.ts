@@ -15,8 +15,8 @@ export class MessageController {
   ) {}
 
   @Post('direct')
-  @UseGuards(CheckFriendshipGuard) // Sử dụng guard để kiểm tra friendship
   @CheckFriendship('body', 'recipientId') // lấy recipientId từ body để kiểm tra friendship
+  @UseGuards(CheckFriendshipGuard) // Sử dụng guard để kiểm tra friendship
   @ResponseMessage('Message sent successfully.')
   async sendDirect(@Body() createMessageDto: CreateMessageDto, @User() user: IUser) {
     return this.messageService.create(createMessageDto, user._id);

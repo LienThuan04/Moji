@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageController } from './message.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,7 +9,7 @@ import { CheckFriendshipGuard } from 'src/guard/check-friendship.guard';
 
 @Module({
   imports: [
-    ConversationModule,
+    forwardRef(() => ConversationModule),
     FriendModule,
     MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema}])
   ],

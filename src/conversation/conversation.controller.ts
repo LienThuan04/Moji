@@ -1,38 +1,107 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UseGuards, Res } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
-import { CreateConversationDto } from './dto/create-conversation.dto';
+import { CreateConversationGroupDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
+// import { CheckFriendshipGuard } from 'src/guard/check-friendship.guard';
+// import { CheckFriendship } from 'src/decorator/check-friendship.decorator';
+import { User } from 'src/decorator/user.decorator';
+import type { IUser } from 'src/user/user.interface';
+import { ResponseMessage } from 'src/decorator/metadata';
 
 @Controller('conversation')
 export class ConversationController {
-  constructor(private readonly conversationService: ConversationService) {}
+  constructor(private readonly conversationService: ConversationService) { }
 
   @Post()
-  async create(@Body() createConversationDto: CreateConversationDto) {
-    const conversation = await this.conversationService.create(createConversationDto);
-    if (!conversation){
-      throw new BadRequestException('Failed to create conversation');
+  // @CheckFriendship('body', 'memberIds') // lấy recipientId từ body để kiểm tra friendship
+  // @UseGuards(CheckFriendshipGuard)
+  @ResponseMessage('Conversation created successfully')
+  async create(@Body() createConversationGroupDto: CreateConversationGroupDto, @User() user: IUser) {
+    const userId = user._id;
+    let conversation: any;
+    if (createConversationGroupDto.type !== 'group' && createConversationGroupDto.type !== 'direct') {
+      throw new BadRequestException('Invalid conversation type.');
     }
-    return conversation;
-  }
+
+    if (createConversationGroupDto.type === 'direct') { //create with direct type
+      const participantId = createConversationGroupDto?.memberIds[0];
+      conversation = await this.conversationService.findDirectConversation(
+        userId,
+        participantId
+      );
+      if (!conversation) {
+        conversation = await this.conversationService.create({
+          type: createConversationGroupDto.type,
+          participants: [
+            { userId: userId, joinedAt: new Date() },
+            { userId: participantId, joinedAt: new Date() }
+          ],
+          lastMessage: new Date(),
+          unreadCounts: new Map(),
+        });
+      }
+    };
+
+    if (createConversationGroupDto.type === 'group') { // create with group type
+      conversation = await this.conversationService.create({
+        type: createConversationGroupDto.type,
+        participants: [
+          { userId: userId, joinedAt: new Date() },
+          ...createConversationGroupDto.memberIds.map(id => ({ userId: id, joinedAt: new Date() }))
+        ],
+        group: {
+          name: createConversationGroupDto.name,
+          createdBy: userId,
+
+        },
+        lastMessage: new Date(),
+        unreadCounts: new Map(),
+      });
+    };
+
+    if (!conversation) {
+      throw new BadRequestException('Conversation type is not valid.');
+    };
+
+    await conversation.populate([
+      {
+        path: 'participants.userId',
+        select: '_id displayName avatarUrl avatarId bio phone email',
+      },
+      {
+        path: 'seenby',
+        select: '_id displayName avatarUrl avatarId bio phone email',
+      },
+      {
+        path: 'lastMessage.senderId',
+        select: '_id displayName avatarUrl avatarId bio phone email',
+      }
+    ]);
+    return {conversation};
+  };
 
   @Get()
   async findAll() {
     return this.conversationService.findAll();
-  }
+  };
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.conversationService.findOne(id);
-  }
+  };
+
+  @Get(':id/message')
+  async findOneMessage(@Param('id') id: string) {
+
+  };
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateConversationDto: UpdateConversationDto) {
     return this.conversationService.update(id, updateConversationDto);
-  }
+  };
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.conversationService.remove(id);
-  }
+  };
 }
