@@ -37,19 +37,5 @@ export class FriendController {
     });
     return { friends: formattedFriends };
   };
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.friendService.findOne(+id);
-  }
-
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return await this.friendService.update(+id, updateFriendDto);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.friendService.remove(+id);
-  }
+  
 }

@@ -97,11 +97,6 @@ export class FriendRequestController {
     return await this.friendRequestService.findOne(id);
   };
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateFriendRequestDto: UpdateFriendRequestDto) {
-    return await this.friendRequestService.update(id, updateFriendRequestDto);
-  };
-
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.friendRequestService.remove(id);

@@ -46,10 +46,6 @@ export class FriendRequestService {
     return request;
   }
 
-  async update(id: string, updateFriendRequestDto: UpdateFriendRequestDto) {
-    return `This action updates a #${id} friendRequest`;
-  }
-
   async remove(id: string) {
     const result = await this.friendRequestModel.findByIdAndDelete(id);
     if (!result) {

@@ -39,11 +39,4 @@ export class FriendService {
     return Check !== null; // Return true if they are friends, false otherwise
   }
 
-  async update(id: number, updateFriendDto: UpdateFriendDto) {
-    return `This action updates a #${id} friend`;
-  }
-
-  async remove(id: number) {
-    return `This action removes a #${id} friend`;
-  }
 }
