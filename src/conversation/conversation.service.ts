@@ -27,8 +27,23 @@ export class ConversationService {
     return createdConversation as unknown as ConversationDocument;
   }
 
-  async findAll() {
-    return `This action returns all conversation`;
+  async findAll(userId: string) {
+    const conversations = await this.conversationModel.find({
+      'participants.userId': { $all: [userId] }
+    }).sort({ lastMessageAt: -1, updatedAt: -1 })
+    .populate({
+      path: 'participants.userId',
+      select: '_id displayName avatarUrl avatarId bio phone email',
+    })
+    .populate({
+      path: 'seenby',
+      select: '_id displayName avatarUrl avatarId bio phone email',
+    })
+    .populate({
+      path: 'lastMessage.senderId',
+      select: '_id displayName avatarUrl avatarId bio phone email',
+    });
+    return conversations;
   }
 
   async findOne(id: string) {

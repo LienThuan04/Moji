@@ -7,6 +7,7 @@ import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { User } from 'src/decorator/user.decorator';
 import type { IUser } from 'src/user/user.interface';
 import { ResponseMessage } from 'src/decorator/metadata';
+import { Participant } from './schema/participant.schema';
 
 @Controller('conversation')
 export class ConversationController {
@@ -81,8 +82,28 @@ export class ConversationController {
   };
 
   @Get()
-  async findAll() {
-    return this.conversationService.findAll();
+  @ResponseMessage('Conversations fetched successfully')
+  async findAll(@User() user: IUser) {
+    const userId = user._id;
+    const conversations = await this.conversationService.findAll(userId);
+    const fomattedConversations = conversations.map(conversation => {
+      const Participants = (conversation.participants).map((p) => ({
+        _id: (p.userId as any)?._id,
+        displayName: (p.userId as any)?.displayName ?? null,
+        avatarUrl: (p.userId as any)?.avatarUrl ?? null,
+        avatarId: (p.userId as any)?.avatarId ?? null,
+        bio: (p.userId as any)?.bio ?? null,
+        phone: (p.userId as any)?.phone ?? null,
+        email: (p.userId as any)?.email ?? null,
+        joinedAt: p.joinedAt,
+      }));
+      return ({
+        ...conversation.toObject(),
+        unreadCounts: conversation.unreadCounts || {},
+        participants: Participants,
+      });
+    });
+    return { conversations: fomattedConversations };
   };
 
   @Get(':id')

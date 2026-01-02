@@ -2,7 +2,7 @@ import { Participant } from "src/conversation/schema/participant.schema";
 
 export const updateConversationAfterCreateMessage = (conversation: any, message: any, senderId: string) => {
     conversation.set({
-        seenBy: [],
+        seenby: [],
         lastMessageAt: message.createdAt,
         lastMessage: {
             _id: message._id,
