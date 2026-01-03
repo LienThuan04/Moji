@@ -70,6 +70,14 @@ export class ConversationService {
     return conversation;
   }
 
+  async isUserInConversation(conversationId: string, userId: string): Promise<boolean> {
+    const conversation = await this.conversationModel.findOne({
+      _id: conversationId,
+      participants: { $elemMatch: { userId: userId } }// Kiểm tra userId có trong mảng participants không
+    });
+    return !!conversation; // Trả về true nếu tìm thấy cuộc trò chuyện, ngược lại trả về false
+  }
+
   async update(id: string, updateConversationDto: UpdateConversationDto) {
     return `This action updates a #${id} conversation`;
   }
