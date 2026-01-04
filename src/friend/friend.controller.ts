@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
-import { UpdateFriendDto } from './dto/update-friend.dto';
 import { User } from 'src/decorator/user.decorator';
 import type { IUser } from 'src/user/user.interface';
 import { ResponseMessage } from 'src/decorator/metadata';

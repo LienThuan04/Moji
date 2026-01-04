@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
-import { UpdateFriendRequestDto } from './dto/update-friend-request.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { FriendRequest, FriendRequestDocument } from './schema/friend-request.schema';
 import { Model } from 'mongoose';
