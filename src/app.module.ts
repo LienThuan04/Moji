@@ -38,7 +38,6 @@ import { FriendRequestModule } from './friend-request/friend-request.module';
     FriendModule,
     FriendRequestModule,
 
-
   ],
   controllers: [AppController],
   providers: [AppService],
