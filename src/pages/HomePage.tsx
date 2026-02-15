@@ -3,34 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { IUser } from "@/types/backend";
-import { clearState } from "@/redux/slice/accountSlide";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toast } from "sonner";
-import { authService } from "@/services/authService";
+import { useAppSelector } from "@/redux/hooks";
 import { LogOutAccount } from "@/components/auth/logoutAccount";
 
 export const HomePage: React.FC = () => {
     const User = useAppSelector((state: { account: { user: IUser } }) => state.account.user);
     const IsAuthenticated = useAppSelector((state: { account: { isAuthenticated: boolean } }) => state.account.isAuthenticated);
     const IsLoading = useAppSelector((state: { account: { isLoading: boolean } }) => state.account.isLoading);
-    const dispatch = useAppDispatch();
 
-    // const handleLogout = async () => {
-    //     try {
-    //         const res = await authService.signOut();
-    //         console.log("Logout response:", res);
-    //         dispatch(clearState());
-    //         if (res && res.message) {
-    //             toast.success(res.message);
-    //         } else {
-    //             toast.error("Error logging out. Please try again.");
-    //         }
-    //     } catch (error: any) {
-    //         console.log("Logout error:", error.message);
-    //         toast.error("Error logging out. Please try again.");
-
-    //     }
-    // };
     const features = [
         {
             title: "Instant Messaging",
@@ -69,21 +49,26 @@ export const HomePage: React.FC = () => {
                             <div className="size-9 rounded-full bg-gradient-to-br from-primary to-primary/60 text-primary-foreground flex items-center justify-center font-semibold text-sm">
                                 {User.displayName ? User.displayName.charAt(0).toUpperCase() : "U"}
                             </div>
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={LogOutAccount}
-                                disabled={IsLoading}
-                            >
-                                {IsLoading ? (
-                                    <span className="inline-flex items-center">
-                                        <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                        Logging out...
-                                    </span>
-                                ) : (
-                                    'Logout'
-                                )}
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                {/* <Button size="sm" asChild>
+                                    <Link to="/chat">Open Chat</Link>
+                                </Button> */}
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={LogOutAccount}
+                                    disabled={IsLoading}
+                                >
+                                    {IsLoading ? (
+                                        <span className="inline-flex items-center">
+                                            <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                            Logging out...
+                                        </span>
+                                    ) : (
+                                        'Logout'
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                     ) : null}
                 </div>
@@ -131,7 +116,14 @@ export const HomePage: React.FC = () => {
                             </div>
                             <Separator className="hidden h-4 lg:block" orientation="vertical" />
                             <span>100K+ messages sent daily</span>
+
                         </div>
+                        {IsAuthenticated &&
+                            <Button size="lg" asChild className="bg-gray-800 text-white hover:text-black/90 focus-visible:ring-gray-800" variant={'outline'}>
+                                <Link to="/chat">Open Chat</Link>
+                            </Button>
+                        }
+
                     </div>
                     <div className="relative">
                         <div className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-primary/10 blur-3xl" aria-hidden />

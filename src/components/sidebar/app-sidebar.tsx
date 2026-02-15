@@ -2,183 +2,109 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
   Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
+  Moon,
+  Sun,
 } from "lucide-react"
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavProjects } from "@/components/sidebar/nav-projects"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
+
 import { NavUser } from "@/components/sidebar/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Switch } from "@/components/ui/switch"
+import { CreateNewChat } from "@/components/chat/CreateNewChat"
+import { NewGroupChatModal } from "@/components/chat/NewGroupChatModal"
+import { GroupChatList } from "@/components/chat/GroupChatList"
+import { AddFriendModal } from "@/components/chat/AddFriendModal"
+import { DirrectMessageList } from "@/components/chat/DirrectMessageList"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { toggleTheme } from "@/redux/slice/themeSlide"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const isDark = useAppSelector(state => state.theme.isDark)
+  const dispatch = useAppDispatch()
   return (
     <Sidebar variant="inset" {...props}>
+
+      {/* Header */}
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild className="rounded-md px-3 py-2 bg-gradient-to-br from-indigo-600 via-violet-600 to-pink-500 shadow-lg transform-gpu transition-all duration-200">
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                <div className="flex w-full items-center px-2 justify-between">
+                  <h2 className="text-4xl font-bold text-white">Moji</h2>
+                  <div className="flex items-center gap-2">
+                    <Sun className="size-4 text-white/80" />
+                    <Switch
+                      checked={isDark}
+                      onCheckedChange={() => dispatch(toggleTheme())}
+                      className="data-[state=checked]:bg-background/80"
+                    />
+                    <Moon className="size-4 text-white/80" />
+                  </div>
                 </div>
               </a>
+
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
+      {/* Content */}
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+
+        {/* NewChat */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <CreateNewChat />
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Group Chat */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="uppercase">Group Chats</SidebarGroupLabel>
+
+          <SidebarGroupAction title="Create Group" className="cursor-pointer">
+            <NewGroupChatModal />
+          </SidebarGroupAction>
+
+          <SidebarGroupContent>
+            <GroupChatList />
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Dirrect message */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="uppercase">Dirrect Chats</SidebarGroupLabel>
+
+          <SidebarGroupAction title="Add Friend" className="cursor-pointer">
+            <AddFriendModal />
+          </SidebarGroupAction>
+
+          <SidebarGroupContent>
+            <DirrectMessageList />
+          </SidebarGroupContent>
+        </SidebarGroup>
+
       </SidebarContent>
+
+      {/* Footer */}
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {/* <NavUser user={data.user} /> */}
       </SidebarFooter>
     </Sidebar>
   )
