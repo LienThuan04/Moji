@@ -7,6 +7,7 @@ import { Toaster } from 'sonner';
 import { useEffect } from 'react';
 import { useAppDispatch } from './redux/hooks';
 import { FetchAccountInfo } from './redux/slice/accountSlide';
+import { RedirectIfAuthenticated, RequireAuth } from '@/services/routeProtection';
 function App() {
   const Dispatch = useAppDispatch();
 
@@ -18,13 +19,26 @@ function App() {
     <Toaster position="bottom-right" closeButton /> {/* Thông báo */}
     <BrowserRouter>
       <Routes>
+
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/signin" element={
+          <RedirectIfAuthenticated>
+            <SignInPage />
+          </RedirectIfAuthenticated>
+        } />
+        <Route path="/signup" element={
+          <RedirectIfAuthenticated>
+            <SignUpPage />
+          </RedirectIfAuthenticated>
+        } />
 
         {/* protected Routes */}
-        <Route path="/chat" element={<ChatAppPage />} />
+        <Route path="/chat" element={
+          <RequireAuth>
+            <ChatAppPage />
+          </RequireAuth>
+        } />
 
       </Routes>
     </BrowserRouter>

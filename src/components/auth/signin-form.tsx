@@ -50,7 +50,7 @@ export function SigninForm({
       toast.success("Login successful!, You will be redirected home shortly."); // Hiển thị thông báo thành công
       Dispatch(setAccessToken(res?.data?.access_token)); // Lưu accessToken vào Redux store
       setTimeout(() => {
-        navigate("/"); // Chuyển hướng đến trang chat sau 1 giây
+        navigate("/chat"); // Chuyển hướng đến trang chat sau 1 giây
         return;
       }, 500);
     } else if (res && res?.error && res?.message) {

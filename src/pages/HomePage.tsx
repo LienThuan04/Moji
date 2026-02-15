@@ -7,6 +7,7 @@ import { clearState } from "@/redux/slice/accountSlide";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toast } from "sonner";
 import { authService } from "@/services/authService";
+import { LogOutAccount } from "@/components/auth/logoutAccount";
 
 export const HomePage: React.FC = () => {
     const User = useAppSelector((state: { account: { user: IUser } }) => state.account.user);
@@ -14,22 +15,22 @@ export const HomePage: React.FC = () => {
     const IsLoading = useAppSelector((state: { account: { isLoading: boolean } }) => state.account.isLoading);
     const dispatch = useAppDispatch();
 
-    const handleLogout = async () => {
-        try {
-            const res = await authService.signOut();
-            console.log("Logout response:", res);
-            dispatch(clearState());
-            if (res && res.message) {
-                toast.success(res.message);
-            } else {
-                toast.error("Error logging out. Please try again.");
-            }
-        } catch (error: any) {
-            console.log("Logout error:", error.message);
-            toast.error("Error logging out. Please try again.");
+    // const handleLogout = async () => {
+    //     try {
+    //         const res = await authService.signOut();
+    //         console.log("Logout response:", res);
+    //         dispatch(clearState());
+    //         if (res && res.message) {
+    //             toast.success(res.message);
+    //         } else {
+    //             toast.error("Error logging out. Please try again.");
+    //         }
+    //     } catch (error: any) {
+    //         console.log("Logout error:", error.message);
+    //         toast.error("Error logging out. Please try again.");
 
-        }
-    };
+    //     }
+    // };
     const features = [
         {
             title: "Instant Messaging",
@@ -71,7 +72,7 @@ export const HomePage: React.FC = () => {
                             <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={handleLogout}
+                                onClick={LogOutAccount}
                                 disabled={IsLoading}
                             >
                                 {IsLoading ? (
