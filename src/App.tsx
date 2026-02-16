@@ -35,10 +35,10 @@ function App() {
     try {
       const root = document.documentElement
       if (isDark) {
-        root.classList.add('dark')
+        root.classList.add('dark') // Thêm lớp 'dark' vào phần tử <html>
         localStorage.setItem('theme', 'dark')
       } else {
-        root.classList.remove('dark')
+        root.classList.remove('dark') // Loại bỏ lớp 'dark' khỏi phần tử <html>
         localStorage.setItem('theme', 'light')
       }
     } catch (e) {
